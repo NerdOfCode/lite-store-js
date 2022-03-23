@@ -31,6 +31,13 @@ LiteStore.update('key_goes_here', idx, 'Updated data here');
 ### Removal of data
 In LiteStore, we have a few different ways to remove data from our store.
 
+#### Single Element Removal
+In order to remove exactly one element, we can do something like:
+
+```javascript
+LiteStore.remove('key_goes_here', LiteStore.get('key_goes_here').indexOf('item'));
+```
+
 #### Mass removal
 Perhaps, the easiest way to remove a lot of data at once, is just to purge one of the "keys" in our store.
 
