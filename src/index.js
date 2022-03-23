@@ -3,23 +3,35 @@
 const _keyStoreName = '_liteStore';
 const _keyStoreMapName = '_liteStore_vmap';
 
+/**
+ * 
+ * @param {*} msg 
+ * @returns 
+ */
 function NonExistentKey(msg) {
     return new Error(msg);
 }
 
 class _LiteStore {
+    /**
+     * 
+     * @param {*} keyStoreName 
+     * @param {*} strictKeys 
+     * @param {*} customIdFunc 
+     */
     constructor(keyStoreName = _keyStoreName, strictKeys = false, customIdFunc = null) {
         this.keyStoreName = keyStoreName;
         this.keyStoreMapName = _keyStoreMapName;
         this.strictKeys = strictKeys;
         this.customIdFunc = customIdFunc;
-        this.registeredEvents = {add: [this._genMap], remove: [this._genMap], update: [this._genMap]};
+        this.registeredEvents = { add: [this._genMap], remove: [this._genMap], update: [this._genMap] };
         this.currentId = 0;
     }
 
-    // init()
-    //  check if local store is already initialized,
-    //  if not format it up
+    /**
+     * 
+     * @returns 
+     */
     init() {
         let keyStore = localStorage.getItem(this.keyStoreName);
         let keyStoreMap = localStorage.getItem(this.keyStoreMapName);
@@ -35,6 +47,10 @@ class _LiteStore {
         return this;
     }
 
+    /**
+     * 
+     * @returns 
+     */
     genNewId() {
         if (this.customIdFunc && typeof this.customIdFunc !== 'undefined') {
             return this.customIdFunc();
@@ -43,6 +59,12 @@ class _LiteStore {
         }
     }
 
+    /**
+     * 
+     * @param {*} undefined 
+     * @param {*} $this 
+     * @returns 
+     */
     _genMap(undefined, $this = this) {
         let t = $this;
 
@@ -64,16 +86,31 @@ class _LiteStore {
         return t.getMap();
     }
 
+    /**
+     * 
+     */
     parseMap() {
         let currentMap = this.getMap();
     }
 
+    /**
+     * 
+     * @param {*} type 
+     * @param {*} func 
+     * @returns 
+     */
     registerEvent(type, func) {
         this.registeredEvents[type].push(func);
 
         return null;
     }
 
+    /**
+     * 
+     * @param {*} event 
+     * @param {*} currentStore 
+     * @returns 
+     */
     emit(event, currentStore) {
         for (var i = 0, events = this.registeredEvents[event]; i < events.length; i++) {
             events[i](currentStore, this);
@@ -82,6 +119,10 @@ class _LiteStore {
         return null;
     }
 
+    /**
+     * 
+     * @returns 
+     */
     getStore() {
         let store = localStorage.getItem(this.keyStoreName);
 
@@ -94,6 +135,10 @@ class _LiteStore {
         return this.getStore();
     }
 
+    /**
+     * 
+     * @returns 
+     */
     getMap() {
         let map = localStorage.getItem(this.keyStoreMapName);
 
@@ -106,6 +151,10 @@ class _LiteStore {
         return this.getMap();
     }
 
+    /**
+     * 
+     * @returns 
+     */
     resetMap() {
         this.currentId = 0;
         localStorage.removeItem(this.keyStoreMapName);
@@ -113,18 +162,35 @@ class _LiteStore {
         return;
     }
 
+    /**
+     * 
+     * @param {*} store 
+     * @returns 
+     */
     updateStore(store) {
         localStorage.setItem(this.keyStoreName, JSON.stringify(store));
 
         return this.getStore();
     }
 
+    /**
+     * 
+     * @param {*} map 
+     * @returns 
+     */    
     updateMap(map) {
         localStorage.setItem(this.keyStoreMapName, JSON.stringify(map));
 
         return this.getMap();
     }
 
+    /**
+     * 
+     * @param {*} key 
+     * @param {*} val 
+     * @param {*} prepend 
+     * @returns 
+     */
     add(key, val, prepend = false) {
         let currentStore = this.getStore();
 
@@ -133,7 +199,7 @@ class _LiteStore {
             if (this.strictKeys) {
                 return null;
             }
-            
+
             let existingData = typeof currentStore[key] === 'string'
                 ? [currentStore[key]]
                 : currentStore[key];
@@ -151,7 +217,13 @@ class _LiteStore {
         this.emit('add', currentStore);
     }
 
-    _findIdx(map, useKey) {
+    /**
+     * 
+     * @param {*} map 
+     * @param {*} useKey 
+     * @returns 
+     */
+    _findIdx(map = this.getMap(), useKey) {
         let keys = Object.keys(map);
 
         for (var i = 0; i < keys.length; i++) {
@@ -163,6 +235,12 @@ class _LiteStore {
         throw NonExistentKey('Unable to locate key in virtual map.');
     }
 
+    /**
+     * 
+     * @param {*} key 
+     * @param {*} objKey 
+     * @param {*} newVal 
+     */
     update(key, objKey, newVal) {
         let currentStore = this.getStore();
         let currentMap = this.getMap();
@@ -179,7 +257,11 @@ class _LiteStore {
         this.emit('update', currentStore);
     }
 
-    // Essentially a wrapper over getStore()
+    /**
+     * 
+     * @param {*} key 
+     * @returns 
+     */
     get(key) {
         let ret = this.getStore()[key] ?? [];
 
@@ -188,12 +270,41 @@ class _LiteStore {
             : ret;
     }
 
+    /**
+     * 
+     * @param {*} key 
+     * @returns 
+     */
     removeKey(key) {
         let currentStore = this.getStore();
 
         if (key in currentStore) {
             delete currentStore[key];
         }
+
+        this.updateStore(currentStore);
+        this.emit('remove', currentStore);
+
+        return;
+    }
+
+    /**
+     * 
+     * @param {*} key 
+     * @param {*} idx 
+     * @returns 
+     */
+    remove(key, idx) {
+        let currentStore = this.getStore();
+
+        if (key in currentStore) {
+            if (typeof currentStore[key][idx] !== 'undefined') {
+                delete currentStore[key][idx];
+            }
+        }
+
+        // Remove newly undefined element
+        currentStore[key] = currentStore[key].filter(item => item);
 
         this.updateStore(currentStore);
         this.emit('remove', currentStore);

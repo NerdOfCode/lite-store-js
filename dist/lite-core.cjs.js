@@ -72,12 +72,23 @@ function _nonIterableSpread() {
 
 var _keyStoreName = '_liteStore';
 var _keyStoreMapName = '_liteStore_vmap';
+/**
+ * 
+ * @param {*} msg 
+ * @returns 
+ */
 
 function NonExistentKey(msg) {
   return new Error(msg);
 }
 
 var _LiteStore = /*#__PURE__*/function () {
+  /**
+   * 
+   * @param {*} keyStoreName 
+   * @param {*} strictKeys 
+   * @param {*} customIdFunc 
+   */
   function _LiteStore() {
     var keyStoreName = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _keyStoreName;
     var strictKeys = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
@@ -95,9 +106,11 @@ var _LiteStore = /*#__PURE__*/function () {
       update: [this._genMap]
     };
     this.currentId = 0;
-  } // init()
-  //  check if local store is already initialized,
-  //  if not format it up
+  }
+  /**
+   * 
+   * @returns 
+   */
 
 
   _createClass(_LiteStore, [{
@@ -116,6 +129,11 @@ var _LiteStore = /*#__PURE__*/function () {
 
       return this;
     }
+    /**
+     * 
+     * @returns 
+     */
+
   }, {
     key: "genNewId",
     value: function genNewId() {
@@ -125,6 +143,13 @@ var _LiteStore = /*#__PURE__*/function () {
         return this.currentId += 1;
       }
     }
+    /**
+     * 
+     * @param {*} undefined 
+     * @param {*} $this 
+     * @returns 
+     */
+
   }, {
     key: "_genMap",
     value: function _genMap(undefined$1) {
@@ -144,17 +169,35 @@ var _LiteStore = /*#__PURE__*/function () {
       t.updateMap(currentMap);
       return t.getMap();
     }
+    /**
+     * 
+     */
+
   }, {
     key: "parseMap",
     value: function parseMap() {
       this.getMap();
     }
+    /**
+     * 
+     * @param {*} type 
+     * @param {*} func 
+     * @returns 
+     */
+
   }, {
     key: "registerEvent",
     value: function registerEvent(type, func) {
       this.registeredEvents[type].push(func);
       return null;
     }
+    /**
+     * 
+     * @param {*} event 
+     * @param {*} currentStore 
+     * @returns 
+     */
+
   }, {
     key: "emit",
     value: function emit(event, currentStore) {
@@ -164,6 +207,11 @@ var _LiteStore = /*#__PURE__*/function () {
 
       return null;
     }
+    /**
+     * 
+     * @returns 
+     */
+
   }, {
     key: "getStore",
     value: function getStore() {
@@ -176,6 +224,11 @@ var _LiteStore = /*#__PURE__*/function () {
       this.init();
       return this.getStore();
     }
+    /**
+     * 
+     * @returns 
+     */
+
   }, {
     key: "getMap",
     value: function getMap() {
@@ -188,6 +241,11 @@ var _LiteStore = /*#__PURE__*/function () {
       this.init();
       return this.getMap();
     }
+    /**
+     * 
+     * @returns 
+     */
+
   }, {
     key: "resetMap",
     value: function resetMap() {
@@ -195,18 +253,38 @@ var _LiteStore = /*#__PURE__*/function () {
       localStorage.removeItem(this.keyStoreMapName);
       return;
     }
+    /**
+     * 
+     * @param {*} store 
+     * @returns 
+     */
+
   }, {
     key: "updateStore",
     value: function updateStore(store) {
       localStorage.setItem(this.keyStoreName, JSON.stringify(store));
       return this.getStore();
     }
+    /**
+     * 
+     * @param {*} map 
+     * @returns 
+     */
+
   }, {
     key: "updateMap",
     value: function updateMap(map) {
       localStorage.setItem(this.keyStoreMapName, JSON.stringify(map));
       return this.getMap();
     }
+    /**
+     * 
+     * @param {*} key 
+     * @param {*} val 
+     * @param {*} prepend 
+     * @returns 
+     */
+
   }, {
     key: "add",
     value: function add(key, val) {
@@ -232,9 +310,18 @@ var _LiteStore = /*#__PURE__*/function () {
       this.updateStore(currentStore);
       this.emit('add', currentStore);
     }
+    /**
+     * 
+     * @param {*} map 
+     * @param {*} useKey 
+     * @returns 
+     */
+
   }, {
     key: "_findIdx",
-    value: function _findIdx(map, useKey) {
+    value: function _findIdx() {
+      var map = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.getMap();
+      var useKey = arguments.length > 1 ? arguments[1] : undefined;
       var keys = Object.keys(map);
 
       for (var i = 0; i < keys.length; i++) {
@@ -245,6 +332,13 @@ var _LiteStore = /*#__PURE__*/function () {
 
       throw NonExistentKey('Unable to locate key in virtual map.');
     }
+    /**
+     * 
+     * @param {*} key 
+     * @param {*} objKey 
+     * @param {*} newVal 
+     */
+
   }, {
     key: "update",
     value: function update(key, objKey, newVal) {
@@ -261,7 +355,12 @@ var _LiteStore = /*#__PURE__*/function () {
 
       this.updateStore(currentStore);
       this.emit('update', currentStore);
-    } // Essentially a wrapper over getStore()
+    }
+    /**
+     * 
+     * @param {*} key 
+     * @returns 
+     */
 
   }, {
     key: "get",
@@ -271,6 +370,12 @@ var _LiteStore = /*#__PURE__*/function () {
       var ret = (_this$getStore$key = this.getStore()[key]) !== null && _this$getStore$key !== void 0 ? _this$getStore$key : [];
       return typeof ret === 'string' ? [ret] : ret;
     }
+    /**
+     * 
+     * @param {*} key 
+     * @returns 
+     */
+
   }, {
     key: "removeKey",
     value: function removeKey(key) {
@@ -280,6 +385,32 @@ var _LiteStore = /*#__PURE__*/function () {
         delete currentStore[key];
       }
 
+      this.updateStore(currentStore);
+      this.emit('remove', currentStore);
+      return;
+    }
+    /**
+     * 
+     * @param {*} key 
+     * @param {*} idx 
+     * @returns 
+     */
+
+  }, {
+    key: "remove",
+    value: function remove(key, idx) {
+      var currentStore = this.getStore();
+
+      if (key in currentStore) {
+        if (typeof currentStore[key][idx] !== 'undefined') {
+          delete currentStore[key][idx];
+        }
+      } // Remove newly undefined element
+
+
+      currentStore[key] = currentStore[key].filter(function (item) {
+        return item;
+      });
       this.updateStore(currentStore);
       this.emit('remove', currentStore);
       return;
