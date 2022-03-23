@@ -1,0 +1,23 @@
+{
+  "name": "lite-store-js",
+  "version": "0.0.1",
+  "description": "Simple abstraction layer over localStorage. Allows easy addition, removal of elements, as well as event dispatches for removals, updates, and additions.",
+  "main": "dist/lite-core.cjs.js",
+  "module": "dist/lite-core.esm.js",
+  "browser": "dist/lite-core.umd.js",
+  "scripts": {
+    "build": "rollup -c",
+    "test": "node test/spec",
+    "pretest": "npm run build"
+  },
+  "author": "Nathan Wander",
+  "license": "MPL-2.0",
+  "devDependencies": {
+    "@babel/core": "^7.17.8",
+    "@babel/preset-env": "^7.16.11",
+    "rollup": "^2.70.1",
+    "rollup-plugin-babel": "^4.4.0",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-node-resolve": "^5.2.0"
+  }
+}
