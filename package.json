@@ -1,6 +1,6 @@
 {
   "name": "lite-store-js",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Simple abstraction layer over localStorage. Allows easy addition, removal of elements, as well as event dispatches for removals, updates, and additions.",
   "main": "dist/lite-core.cjs.js",
   "module": "dist/lite-core.esm.js",
