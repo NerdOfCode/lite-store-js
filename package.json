@@ -12,6 +12,10 @@
   },
   "author": "Nathan Wander",
   "license": "MPL-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NerdOfCode/lite-store-js"
+  },
   "devDependencies": {
     "@babel/core": "^7.17.8",
     "@babel/preset-env": "^7.16.11",
